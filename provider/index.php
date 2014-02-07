@@ -401,6 +401,13 @@ check out the <a href="https://gitorious.org/nameid/">source code</a>!</p>
   <p class="text-center">BTC: 1<b>Nameid</b>3brhZrbTN1M7t6afMAfVBiGioJT
 | NMC: ND6yWYKZS9NnMPnfN6C6yZHG8gRe3r69GR</p>
 
+<!-- Banner for "the day we fight back".  -->
+<!--[if !(lte IE 8)]><!--> 
+   <script type="text/javascript"> 
+     (function(){var e=document.createElement("script");e.type="text/javascript";e.async=true;e.src=document.location.protocol+"//d1agz031tafz8n.cloudfront.net/thedaywefightback.js/widget.min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})()
+   </script>
+<!--<![endif]-->
+
 </body>
 </html>
 <?php
