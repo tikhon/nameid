@@ -29,11 +29,13 @@ class JsonSender
 {
 
   /**
-   * Construct.
+   * Construct.  This sends the corresponding header() commands, too.
    */
   public function __construct ()
   {
-    // Nothing to be done.
+    header ("Cache-Control: no-cache");
+    header ("Pragma: no-cache");
+    header ("Content-Type: application/json; charset=utf-8");
   }
 
   /**
@@ -255,6 +257,17 @@ class JsonObjectSender
   {
     $this->next ($key);
     $this->sender->sendDateTime ($val);
+  }
+
+  /**
+   * Start sending an array.
+   * @param key Key to send with.
+   * @return Array sender.
+   */
+  public function sendArray ($key)
+  {
+    $this->next ($key);
+    return $this->sender->sendArray ();
   }
 
 }

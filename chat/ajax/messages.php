@@ -17,15 +17,35 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Configuration variables are set here.  */
+/* Ajax query provider to send chat history messages.  */
 
-/* Maximal messages to send to new chat clients.  */
-$maximalMessages = 10;
+require_once ("lib/config.inc.php");
 
-/* Database configuration.  */
-$dbHost = "localhost";
-$dbUser = "root";
-$dbPassword = "";
-$dbName = "namechat";
+require_once ("lib/chat.inc.php");
+require_once ("lib/database.inc.php");
+require_once ("lib/json.inc.php");
+require_once ("lib/request.inc.php");
+
+// Construct the basic worker classes.
+$db = new Database ($dbHost, $dbUser, $dbPassword, $dbName);
+$c = new Chat ($db);
+$req = new RequestHandler ();
+$json = new JsonSender ();
+
+// Query for messages and send them.
+$obj = $json->sendObject ();
+$arr = $obj->sendArray ("messages");
+if ($req->check ("since"))
+  $c->queryNew ($arr, $req->getInteger ("since"));
+else
+  $c->queryNew ($arr);
+$arr->close ();
+$obj->close ();
+
+// Close everything.
+$json->close ();
+$req->close ();
+$c->close ();
+$db->close ();
 
 ?>

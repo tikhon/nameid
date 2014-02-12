@@ -68,7 +68,7 @@ class Chat
    * @param sender JSON array sender object.
    * @param since ID of last object *not* to send any more.
    */
-  public queryNew ($sender, $since)
+  public queryNew ($sender, $since = 0)
   {
     global $maximalMessages;
 
