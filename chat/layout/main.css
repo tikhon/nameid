@@ -46,3 +46,13 @@ body
   max-height: 15em;
   overflow: auto;
 }
+
+/* Format the submit form.  */
+#submitForm div
+{
+  width: 100%;
+}
+#submitForm input
+{
+  width: 90%;
+}

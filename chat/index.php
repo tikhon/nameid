@@ -91,6 +91,13 @@ zu Ende ist.</dd>
 Testnachricht, die auch hier noch weiter geht und erst jetzt langsam
 zu Ende ist.</dd>
     </dl>
+
+    <form id="submitForm">
+      <div class="input-append">
+        <input type="text" id="message" name="message" />
+        <button class="btn btn-primary" type="submit">Send</button>
+      </div>
+    </form>
   </div>
 
   <hr />
