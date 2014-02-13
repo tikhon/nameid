@@ -37,6 +37,16 @@ function registerOnLoad (handler)
 }
 
 /**
+ * Register a regular timer callback.
+ * @param intv Interval in seconds.
+ * @param handler Handler to call regularly.
+ */
+function registerInterval (intv, handler)
+{
+  window.setInterval (handler, 1000 * intv);
+}
+
+/**
  * Create an element with the given text as child node.
  * @param tag Element's tag.
  * @param text Text content to put into the tag.

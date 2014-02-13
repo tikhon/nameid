@@ -28,9 +28,8 @@
 function queryAjax (page, content, handler)
 {
   var req = new XMLHttpRequest ();
-  req.open ("POST", page, true);
 
-  var content = "";
+  var postStr = "";
   var first = true;
   for (var key in content)
     {
@@ -40,9 +39,9 @@ function queryAjax (page, content, handler)
       if (first)
         first = false;
       else
-        content += "&";
+        postStr += "&";
 
-      content += key + "=" + val;
+      postStr += key + "=" + val;
     }
 
   function stateChanged ()
@@ -51,7 +50,11 @@ function queryAjax (page, content, handler)
         handler (req.response);
     }
 
+  req.open ("POST", page, true);
+  req.setRequestHeader ("Content-Type", "application/x-www-form-urlencoded");
+  req.setRequestHeader ("Content-Length", postStr.length);
+  req.setRequestHeader ("Connection", "close");
   req.onreadystatechange = stateChanged;
   req.responseType = "json";
-  req.send (content);
+  req.send (postStr);
 }

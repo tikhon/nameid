@@ -19,6 +19,8 @@
 
 /* Main page of the chat.  */
 
+require_once ("lib/config.inc.php");
+
 /* Set encoding to UTF-8.  */
 header ("Content-Type: text/html; charset=utf-8");
 
@@ -40,14 +42,12 @@ header ("Content-Type: text/html; charset=utf-8");
 
 <script type="text/javascript">
 
+var refreshIntv = <?php echo $refreshTime; ?>;
+
 registerOnLoad (function ()
   {
-    var chat = new Chat (document.getElementById ("chatHistory"));
-    function handler (res)
-      {
-        chat.handleMessages (res.messages);
-      }
-    queryAjax ("ajax/messages.php", {}, handler);
+    var chat = new Chat (document.getElementById ("chatHistory"), "ajax/");
+    chat.setupRefresh (refreshIntv);
   });
 
 </script>
