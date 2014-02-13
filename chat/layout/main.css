@@ -34,7 +34,7 @@ body
   width: 8em;
   text-align: right;
 }
-#chatHistory dd:not(.long)
+#chatHistory dd:not(.long):not(.empty)
 {
   margin-top: -1.4em;
 }

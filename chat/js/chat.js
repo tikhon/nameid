@@ -50,10 +50,17 @@ Chat.prototype.handleMessages = function (msg)
           dt.className = "long";
           dd.className = "long";
         }
+      if (msg[i].message.length === 0)
+        {
+          dt.className = "empty";
+          dd.className = "empty";
+        }
         
       this.history.appendChild (dt);
       this.history.appendChild (dd);
     }
+
+  this.history.lastChild.scrollIntoView ();
   this.lastId = msg[msg.length - 1].id;
 }
 
