@@ -16,10 +16,6 @@
 
 -- Database setup script for the chat.
 
--- Set some options.
-SET GLOBAL sql_mode = 'STRICT_ALL_TABLES,NO_AUTO_VALUE_ON_ZERO';
-SET CHARSET utf8;
-
 -- Create table with chat history.
 CREATE TABLE `chat_history`
   (`ID`       SERIAL,

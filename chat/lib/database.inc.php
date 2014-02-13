@@ -47,10 +47,7 @@ class Database
                                   .mysql_error ($this->db));
 
     $this->select ($name);
-
-    /* Send options.  */
-    $this->query ("SET SQL_MODE = 'STRICT_ALL_TABLES,NO_AUTO_VALUE_ON_ZERO'");
-    $this->query ("SET CHARSET utf8");
+    mysql_set_charset ('utf8', $this->db);
   }
 
   /**
