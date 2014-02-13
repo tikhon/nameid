@@ -39,7 +39,7 @@ class Database
    * @param name Database name to select.
    * @throws RuntimeException in case the connection fails.
    */
-  private function __construct ($host, $user, $pass, $name)
+  public function __construct ($host, $user, $pass, $name)
   {
     $this->db = @mysql_connect ($host, $user, $pass);
     if (!$this->db)

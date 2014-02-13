@@ -53,7 +53,7 @@ class Chat
    * @param name Name of sending user.
    * @param msg Chat message.
    */
-  public submitMessage ($name, $msg)
+  public function submitMessage ($name, $msg)
   {
     $name = $this->db->escapeString ($name);
     $msg = $this->db->escapeString ($msg);
@@ -68,7 +68,7 @@ class Chat
    * @param sender JSON array sender object.
    * @param since ID of last object *not* to send any more.
    */
-  public queryNew ($sender, $since = 0)
+  public function queryNew ($sender, $since = 0)
   {
     global $maximalMessages;
 

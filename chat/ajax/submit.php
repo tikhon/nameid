@@ -17,7 +17,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/* Ajax query provider to send chat history messages.  */
+/* Ajax query provider to submit a chat message.  */
 
 require_once ("../lib/config.inc.php");
 
@@ -31,6 +31,12 @@ $db = new Database ($dbHost, $dbUser, $dbPassword, $dbName);
 $c = new Chat ($db);
 $req = new RequestHandler ();
 $json = new JsonSender ();
+
+// Insert submitted message.
+if (!$req->check ("message"))
+  throw new RuntimeException ("No chat message given.");
+$msg = $req->getString ("message");
+$c->submitMessage ("Test User", $msg);
 
 // Query for messages and send them.
 $obj = $json->sendObject ();
