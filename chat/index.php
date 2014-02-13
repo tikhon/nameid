@@ -48,6 +48,20 @@ registerOnLoad (function ()
   {
     var chat = new Chat (document.getElementById ("chatHistory"), "ajax/");
     chat.setupRefresh (refreshIntv);
+
+    function interceptSubmit (evt)
+      {
+        evt.preventDefault ();
+
+        var field = document.getElementById ("message");
+        var val = field.value;
+        field.value = "";
+        field.focus ();
+        
+        chat.submitMessage (val);
+      }
+    var form = document.getElementById ("submitForm");
+    form.addEventListener ("submit", interceptSubmit, false);
   });
 
 </script>

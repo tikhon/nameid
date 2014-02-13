@@ -81,3 +81,23 @@ Chat.prototype.setupRefresh = function (intv)
   registerInterval (intv, updateIt);
   updateIt ();
 }
+
+/**
+ * Submit a chat message.
+ * @param msg Message to submit.
+ */
+Chat.prototype.submitMessage = function (msg)
+{
+  var content = {};
+  if (this.lastId !== null)
+    content.since = this.lastId;
+  content.message = msg;
+
+  var me = this;
+  function handler (data)
+    {
+      me.handleMessages (data.messages);
+    }
+
+  queryAjax (me.ajaxRoot + "submit.php", content, handler);
+}
