@@ -23,3 +23,26 @@ body
 {
   padding-top: 40px;
 }
+
+/* Format of the chat history display.  */
+#chatHistory dd
+{
+  padding-left: 8em;
+}
+#chatHistory dt:not(.long)
+{
+  width: 8em;
+  text-align: right;
+}
+#chatHistory dd:not(.long)
+{
+  margin-top: -1.4em;
+}
+
+/* Layout of the chat history block itself.  */
+/* FIXME: Make mode dynamic and choose a good height somehow!  */
+#chatHistory
+{
+  max-height: 15em;
+  overflow: auto;
+}

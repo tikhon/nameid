@@ -65,6 +65,32 @@ that messages are indeed from the rightful owners of the corresponding
 <a href="https://gitorious.org/nameid/">source code</a> and consider
 this an example for how to use <b>NameID</b> logins in your
 own project.</p>
+
+    <dl class="well well-small" id="chatHistory">
+      <dt>domob:</dt>
+      <dd>Dies ist eine Testnachricht.</dd>
+
+      <dt>domob:</dt>
+      <dd>Dies ist eine Testnachricht.</dd>
+
+      <dt class="long">ganz, ganz, ganz langer Name:</dt>
+      <dd class="long">Und hier noch eine ganz, ganz, ganz, ganz lange
+Testnachricht, die auch hier noch weiter geht und erst jetzt langsam
+zu Ende ist.</dd>
+
+      <dt>domob:</dt>
+      <dd>Dies ist eine Testnachricht.</dd>
+
+      <dt class="long">ganz, ganz, ganz langer Name:</dt>
+      <dd class="long">Und hier noch eine ganz, ganz, ganz, ganz lange
+Testnachricht, die auch hier noch weiter geht und erst jetzt langsam
+zu Ende ist.</dd>
+
+      <dt class="long">ganz, ganz, ganz langer Name:</dt>
+      <dd class="long">Und hier noch eine ganz, ganz, ganz, ganz lange
+Testnachricht, die auch hier noch weiter geht und erst jetzt langsam
+zu Ende ist.</dd>
+    </dl>
   </div>
 
   <hr />
