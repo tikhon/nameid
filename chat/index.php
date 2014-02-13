@@ -34,6 +34,24 @@ header ("Content-Type: text/html; charset=utf-8");
 <link rel="stylesheet" type="text/css" href="layout/main.css" />
 <link rel="stylesheet" type="text/css" href="layout/bootstrap.min.css" />
 
+<script type="text/javascript" src="js/ajax.js"></script>
+<script type="text/javascript" src="js/chat.js"></script>
+<script type="text/javascript" src="js/core.js"></script>
+
+<script type="text/javascript">
+
+registerOnLoad (function ()
+  {
+    var chat = new Chat (document.getElementById ("chatHistory"));
+    function handler (res)
+      {
+        chat.handleMessages (res.messages);
+      }
+    queryAjax ("ajax/messages.php", {}, handler);
+  });
+
+</script>
+
 </head>
 <body>
 
@@ -66,31 +84,7 @@ that messages are indeed from the rightful owners of the corresponding
 this an example for how to use <b>NameID</b> logins in your
 own project.</p>
 
-    <dl class="well well-small" id="chatHistory">
-      <dt>domob:</dt>
-      <dd>Dies ist eine Testnachricht.</dd>
-
-      <dt>domob:</dt>
-      <dd>Dies ist eine Testnachricht.</dd>
-
-      <dt class="long">ganz, ganz, ganz langer Name:</dt>
-      <dd class="long">Und hier noch eine ganz, ganz, ganz, ganz lange
-Testnachricht, die auch hier noch weiter geht und erst jetzt langsam
-zu Ende ist.</dd>
-
-      <dt>domob:</dt>
-      <dd>Dies ist eine Testnachricht.</dd>
-
-      <dt class="long">ganz, ganz, ganz langer Name:</dt>
-      <dd class="long">Und hier noch eine ganz, ganz, ganz, ganz lange
-Testnachricht, die auch hier noch weiter geht und erst jetzt langsam
-zu Ende ist.</dd>
-
-      <dt class="long">ganz, ganz, ganz langer Name:</dt>
-      <dd class="long">Und hier noch eine ganz, ganz, ganz, ganz lange
-Testnachricht, die auch hier noch weiter geht und erst jetzt langsam
-zu Ende ist.</dd>
-    </dl>
+    <dl class="well well-small" id="chatHistory"></dl>
 
     <form id="submitForm">
       <div class="input-append">

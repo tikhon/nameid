@@ -22,6 +22,9 @@
 /* Maximal messages to send to new chat clients.  */
 $maximalMessages = 10;
 
+/* Time in seconds between refresh calls from clients.  */
+$refreshTime = 5;
+
 /* Database configuration.  */
 $dbHost = "localhost";
 $dbUser = "root";
