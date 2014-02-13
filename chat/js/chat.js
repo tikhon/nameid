@@ -43,7 +43,7 @@ Chat.prototype.handleMessages = function (msg)
   for (var i = 0; i < msg.length; ++i)
     {
       assert (this.lastId === null || msg[i].id > this.lastId);
-      var dt = createWithText ("dt", msg[i].name);
+      var dt = createWithText ("dt", msg[i].name + ":");
       var dd = createWithText ("dd", msg[i].message);
       if (msg[i].name.length > 12)
         {
