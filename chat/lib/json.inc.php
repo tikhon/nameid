@@ -127,7 +127,7 @@ class JsonArraySender
    * Construct it.
    * @param sender JsonSender object to use as parent.
    */
-  public function __construct ($sender)
+  public function __construct (JsonSender $sender)
   {
     $this->sender = $sender;
     $this->closed = false;
@@ -192,7 +192,7 @@ class JsonObjectSender
    * Construct it.
    * @param sender JsonSender object to use as parent.
    */
-  public function __construct ($sender)
+  public function __construct (JsonSender $sender)
   {
     $this->sender = $sender;
     $this->closed = false;

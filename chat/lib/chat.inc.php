@@ -35,7 +35,7 @@ class Chat
    * Construct it given the DB handle.
    * @param db Database handle.
    */
-  public function __construct ($db)
+  public function __construct (Database $db)
   {
     $this->db = $db;
   }
@@ -68,7 +68,7 @@ class Chat
    * @param sender JSON array sender object.
    * @param since ID of last object *not* to send any more.
    */
-  public function queryNew ($sender, $since = 0)
+  public function queryNew (JsonArraySender $sender, $since = 0)
   {
     global $maximalMessages;
 
