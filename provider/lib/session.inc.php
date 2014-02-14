@@ -19,8 +19,6 @@
 
 /* Manage the user login session.  */
 
-require_once ("config.inc.php");
-
 /**
  * This class manages all session related stuff.  Basically that is
  * to keep track of whether or not a user is logged in.
@@ -30,12 +28,11 @@ class Session
 
   /**
    * Construct, which starts the session.
+   * @param name Session name to start.
    */
-  public function __construct ()
+  public function __construct ($name)
   {
-    global $sessionName;
-
-    session_name ($sessionName);
+    session_name ($name);
     session_start ();
   }
 
@@ -77,13 +74,12 @@ class Session
 
   /**
    * Generate a fresh login nonce and store it in the session.
+   * @param bytes Number of bytes to use in the nonce.
    * @return The generated nonce.
    */
-  public function generateNonce ()
+  public function generateNonce ($bytes)
   {
-    global $nonceBytes;
-
-    $bin = openssl_random_pseudo_bytes ($nonceBytes);
+    $bin = openssl_random_pseudo_bytes ($bytes);
     $str = base64_encode ($bin);
 
     $_SESSION["loginNonce"] = $str;

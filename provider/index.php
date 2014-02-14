@@ -40,7 +40,7 @@ header("Cache-Control: no-cache");
 header("Pragma: no-cache");
 
 // Construct the basic worker classes.
-$session = new Session ();
+$session = new Session ($sessionName);
 $rpc = new HttpNamecoin ($rpcHost, $rpcPort, $rpcUser, $rpcPassword);
 $nc = new NamecoinInterface ($rpc, $namePrefix);
 $req = new RequestHandler ();
@@ -274,7 +274,7 @@ $msg->runWithErrors ("performActions");
 switch ($status)
   {
   case "loginForm":
-    $loginNonce = $session->generateNonce ();
+    $loginNonce = $session->generateNonce ($nonceBytes);
     break;
 
   case "loggedIn":
