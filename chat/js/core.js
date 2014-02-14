@@ -24,16 +24,7 @@
  */
 function registerOnLoad (handler)
 {
-  var oldHandler = window.onload;
-  
-  function doAll ()
-    {
-      if (oldHandler !== null)
-        oldHandler ();
-      handler ();
-    }
-
-  window.onload = doAll;
+  window.addEventListener ("load", handler);
 }
 
 /**

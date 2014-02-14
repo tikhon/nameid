@@ -30,7 +30,7 @@ require_once ("../lib/request.inc.php");
 $db = new Database ($dbHost, $dbUser, $dbPassword, $dbName);
 $c = new Chat ($db);
 $req = new RequestHandler ();
-$json = new JsonSender ();
+$json = new JsonSender (true);
 
 // Query for messages and send them.
 $obj = $json->sendObject ();

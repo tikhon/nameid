@@ -31,4 +31,22 @@ $dbUser = "root";
 $dbPassword = "";
 $dbName = "namechat";
 
+/* Connection settings to namecoind.  */
+$rpcHost = "localhost";
+$rpcPort = 8336;
+$rpcUser = "daniel";
+$rpcPassword = "password";
+
+/* Namespace used for name lookups.  */
+$namePrefix = "id";
+
+/* Name to use for session.  */
+$sessionName = "namechat_login";
+
+/* URL of the server running this NameID instance.  */
+$serverUri = "http://localhost:8080/namechat/";
+
+/* Number of random bytes to use for the nonce.  */
+$nonceBytes = 16;
+
 ?>

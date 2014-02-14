@@ -24,6 +24,11 @@ body
   padding-top: 40px;
 }
 
+.hidden
+{
+  display: none;
+}
+
 /* Format of the chat history display.  */
 #chatHistory dd
 {
@@ -55,4 +60,10 @@ body
 #submitForm input
 {
   width: 90%;
+}
+
+/* Hide certain parts of the page when the addon is there.  */
+.withAddon .hideWithAddon
+{
+  display: none;
 }

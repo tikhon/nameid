@@ -26,11 +26,13 @@ require_once ("../lib/database.inc.php");
 require_once ("../lib/json.inc.php");
 require_once ("../lib/request.inc.php");
 
+/* FIXME: Check for login!  */
+
 // Construct the basic worker classes.
 $db = new Database ($dbHost, $dbUser, $dbPassword, $dbName);
 $c = new Chat ($db);
 $req = new RequestHandler ();
-$json = new JsonSender ();
+$json = new JsonSender (true);
 
 // Insert submitted message.
 if (!$req->check ("message"))

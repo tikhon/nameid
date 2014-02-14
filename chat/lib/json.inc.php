@@ -29,13 +29,17 @@ class JsonSender
 {
 
   /**
-   * Construct.  This sends the corresponding header() commands, too.
+   * Construct.  This can send the corresponding header() commands, too.
+   * @param headers Send also headers for pure JSON document?
    */
-  public function __construct ()
+  public function __construct ($headers)
   {
-    header ("Cache-Control: no-cache");
-    header ("Pragma: no-cache");
-    header ("Content-Type: application/json; charset=utf-8");
+    if ($headers)
+      {
+        header ("Cache-Control: no-cache");
+        header ("Pragma: no-cache");
+        header ("Content-Type: application/json; charset=utf-8");
+      }
   }
 
   /**
