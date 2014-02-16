@@ -25,20 +25,25 @@ require_once ("../lib/chat.inc.php");
 require_once ("../lib/database.inc.php");
 require_once ("../lib/json.inc.php");
 require_once ("../lib/request.inc.php");
-
-/* FIXME: Check for login!  */
+require_once ("../lib/session.inc.php");
 
 // Construct the basic worker classes.
+$session = new Session ($sessionName);
 $db = new Database ($dbHost, $dbUser, $dbPassword, $dbName);
 $c = new Chat ($db);
 $req = new RequestHandler ();
 $json = new JsonSender (true);
 
+// Check that a user is logged in.
+$loggedIn = $session->getUser ();
+if ($loggedIn === NULL)
+  throw new RuntimeException ("No user is logged in.");
+
 // Insert submitted message.
 if (!$req->check ("message"))
   throw new RuntimeException ("No chat message given.");
 $msg = $req->getString ("message");
-$c->submitMessage ("Test User", $msg);
+$c->submitMessage ($loggedIn, $msg);
 
 // Query for messages and send them.
 $obj = $json->sendObject ();
@@ -55,5 +60,6 @@ $json->close ();
 $req->close ();
 $c->close ();
 $db->close ();
+$session->close ();
 
 ?>
