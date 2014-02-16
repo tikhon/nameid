@@ -190,8 +190,9 @@ var loggedInUser = null;
 <?php
 if ($loggedInUser !== NULL)
   {
-    echo "loggedIn = ";
+    echo "loggedInUser = ";
     $json->sendString ($loggedInUser);
+    echo ";\n";
   }
 ?>
 <?php
