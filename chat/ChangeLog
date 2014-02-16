@@ -1,5 +1,6 @@
 ChangeLog for NameID Chat Service
 =================================
 
-Version 0.1a (trunk):
+Version 0.1a (2014-02-16):
   * First released alpha version.
+  * Supports logins and basic chatting.
