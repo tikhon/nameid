@@ -43,7 +43,7 @@ NameIdAddon.prototype =
      */
     register: function ()
     {
-      Services.obs.addObserver (this, "document-element-inserted", false);
+      Services.obs.addObserver (this, "content-document-global-created", false);
     },
 
     /**
@@ -51,7 +51,7 @@ NameIdAddon.prototype =
      */
     unregister: function ()
     {
-      Services.obs.removeObserver (this, "document-element-inserted");
+      Services.obs.removeObserver (this, "content-document-global-created");
       this.trust.close ();
       this.trust = null;
     },
@@ -65,14 +65,14 @@ NameIdAddon.prototype =
      */
     observe: function (subject, topic, data)
     {
-      if (topic !== "document-element-inserted")
+      if (topic !== "content-document-global-created")
         return;
 
-      log ("Observing page load: " + subject.URL);
+      log ("Observing page load: " + subject.document.URL);
       var me = this;
       function handler (evt)
         {
-          me.scanPage (evt.target.ownerDocument);
+          me.scanPage (evt.target);
         }
       subject.addEventListener ("load", handler, true);
     },
