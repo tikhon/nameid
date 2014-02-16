@@ -42,8 +42,11 @@ registerOnLoad (function ()
         
         chat.submitMessage (val);
       }
-    var form = document.getElementById ("submitForm");
-    form.addEventListener ("submit", interceptSubmit, false);
+    if (loggedInUser !== null)
+      {
+        var form = document.getElementById ("submitForm");
+        form.addEventListener ("submit", interceptSubmit, false);
+      }
   });
 
 </script>
