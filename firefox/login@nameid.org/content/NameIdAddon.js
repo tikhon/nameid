@@ -89,7 +89,14 @@ NameIdAddon.prototype =
       var form = doc.getElementById ("loginForm");
       if (!nonceEl || !uriEl || !form)
         {
-          log ("Found no NameID login form.");
+          var missing = "";
+          if (!nonceEl)
+            missing += " nonceEl";
+          if (!uriEl)
+            missing += " uriEl";
+          if (!form)
+            missing += " form";
+          log ("Found no NameID login form.  Missing:" + missing);
           return;
         }
 
