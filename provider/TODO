@@ -1,5 +1,7 @@
 * Mention signer in FAQ.
 
+* Improve JS UI for non-extension case.
+
 * Allow setting sreg data directly with special field in value.
 
 * Logo for the webpage.
