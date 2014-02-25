@@ -28,8 +28,8 @@ if (!isset ($fromIndex) || $fromIndex !== "yes")
 
 <div class="well well-small">
   <p class="faq">What is Namecoin?</p>
-  <p><a href="https://namecoin.org/">Namecoin</a> is a peer-to-peer, completely
-decentralised system based on <a href="https://www.bitcoin.org/">Bitcoin</a>
+  <p><a href="http://namecoin.info/">Namecoin</a> is a peer-to-peer, completely
+decentralised system based on <a href="https://bitcoin.org/">Bitcoin</a>
 technology that allows everyone to register <i>names</i>.  After you own
 a name, no-one can take it from you without your consent, and you can associate
 data with it that everyone can be sure originated from you but which can neither
@@ -40,11 +40,11 @@ be forged nor censored by unauthorised attackers.</p>
   <p class="faq">How do Namecoin identities work?</p>
   <p>In the Namecoin system, there are multiple possible uses for names:  The
 most common today is for
-<a href="https://wiki.namecoin.org/Namespace:Domain_names"><b>domain
+<a href="http://wiki.namecoin.info/?title=Domain_Name_Specification_2.0"><b>domain
 names</b></a>
 (these are names with the <code>d/</code> prefix), but another possible
 use-case is that of
-<a href="https://wiki.namecoin.org/Namespace:Identity"><b>identities</b></a>:
+<a href="http://wiki.namecoin.info/?title=Identity"><b>identities</b></a>:
 Those are names of the form <code>id/your-nick</code>, and they are
 particularly interesting because you can, for instance, store your public keys
 for <a href="http://gnupg.org/">GnuPG</a>, your
@@ -105,11 +105,12 @@ OpenID consumer site, where you are then authenticated with your identity.</p>
 <div class="well well-small">
   <p class="faq">What do I need in order to use NameID?</p>
   <p>First of all, you need a 
-<a href="https://wiki.namecoin.org/Namespace:Identity"><b>Namecoin
+<a href="http://wiki.namecoin.info/?title=Identity"><b>Namecoin
 identity</b></a>,
 and need the wallet that owns it on your local system.  Second, you need
-<a href="https://github.com/namecoin-qt/namecoin-qt"><b>Namecoin-Qt</b></a>
-installed and running, and need to be able to perform
+<a href="https://github.com/namecoin/namecoin"><b>Namecoin</b></a>
+installed and running with the <code>server=1</code> configuration flag,
+and need to be able to perform
 <code>signmessage</code> commands with it.  Don't worry though, you can
 install the <a href="?view=addon"><b>NameID Easy Login</b></a> add-on for
 <a href="https://www.mozilla.org/">Mozilla</a> browsers, which takes
@@ -119,9 +120,9 @@ sites you want to sign into.</p>
 
 <div class="well well-small">
   <p class="faq">Where do I get a Namecoin identity from?</p>
-  <p>Please consult the <a href="https://namecoin.org/">Namecoin website</a>
+  <p>Please consult the <a href="http://namecoin.info/">Namecoin website</a>
 for more details, or take a look at the
-<a href="https://forum.namecoin.org/">Namecoin forum</a> for help.</p>
+<a href="http://forum.namecoin.info/">Namecoin forum</a> for help.</p>
 </div>
 
 <div class="well well-small">
@@ -182,10 +183,11 @@ verify the tags against my key.</p>
 <div class="well well-small">
   <p class="faq">Does NameID have a .bit domain?</p>
   <p>Yes, you can use any of
-<a href="https://nameid.bit/">nameid.bit</a>,
+<b><a href="https://nameid.bit/">nameid.bit</a></b>,
 <a href="https://name-id.bit/">name-id.bit</a>,
-<a href="https://myid.bit/">myid.bit</a>
-and <a href="https://id.bit/">id.bit</a>.  Note however that
+<a href="https://myid.bit/">myid.bit</a>,
+<a href="https://yourid.bit/">yourid.bit</a>
+and <b><a href="https://id.bit/">id.bit</a></b>.  Note, however, that
 you have to use <code>https://nameid.<b>org</b>/</code> for signing into
 OpenID sites anyway, because otherwise it will most probably fail when the
 consumer site tries to connect to <b>NameID</b> on its own in order to
