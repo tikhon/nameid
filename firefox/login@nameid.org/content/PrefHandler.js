@@ -1,6 +1,6 @@
 /*
     NameID, a namecoin based OpenID identity provider.
-    Copyright (C) 2013 by Daniel Kraft <d@domob.eu>
+    Copyright (C) 2013-2014 by Daniel Kraft <d@domob.eu>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -103,7 +103,10 @@ PrefHandler.prototype =
       this.defaults.setCharPref ("rpc.user", "");
       this.defaults.setCharPref ("rpc.password", "");
 
-      this.defaults.setCharPref ("trust.white", "[\"https://nameid.org/\"]");
+      var whiteList = ["https://nameid.org/",
+                       "https://nameid.bit/",
+                       "https://id.bit/"];
+      this.defaults.setCharPref ("trust.white", JSON.stringify (whiteList));
       this.defaults.setCharPref ("trust.black", "[]");
 
       /* Try to figure out the credentials from the namecoin config file,

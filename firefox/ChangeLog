@@ -2,6 +2,7 @@ ChangeLog for NameID Login Add-On
 =================================
 
 Version 0.5a (trunk):
+  * Whitelist nameid.bit and id.bit by default, too.
 
 Version 0.4a (2014-02-16):
   * Use different, more robust internal mechanism to detect page loads.
