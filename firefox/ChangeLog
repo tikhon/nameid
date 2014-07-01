@@ -1,6 +1,8 @@
 ChangeLog for NameID Login Add-On
 =================================
 
+Version 0.6a (trunk):
+
 Version 0.5a (2014-07-01):
   * Whitelist nameid.bit and id.bit by default, too.
   * Switch to more flexible, event-based communication with the page.  This
