@@ -38,29 +38,33 @@ You must write out a login form (or something like that) which tells
 the client its nonce and gets back the client's claimed identity
 as well as the challenge message signature.  It is up to your
 application to handle how this communication is done, but if you
-follow the practices outlined below, the NameID add-on can recognize
-your login form and allow clients to easily perform the signature.
-You can also take a look at the NameID login form code to see how
-this is done in NameID itself--the code is located at pages/loginForm.php.
+follow the practices outlined below, the NameID add-on can be utilised
+to automatically sign the challenge messages (if it is available
+on the client side).
 
-You need to define two elements with DOM ID's "nameid-nonce" and "nameid-uri",
-which contain the nonce and server URI as text node, respectively.  In the
-case of NameID, those are <span> elements, but it doesn't matter.  They
-are necessary to tell the add-on how to construct the challenge message.
+All communication between your page and the add-on should be done using
+the predefined JS library in js/NameId.js.  The basic usage looks like this:
 
-Furthermore, the actual <form> element must have the ID "loginForm".  The
-add-on only activates itself if it finds all three ID's ("nameid-nonce",
-"nameid-uri" and "loginForm").  It also binds to the form's "submit"
-event to perform the message signature.
+  var nameid = new NameId (URL, NONCE);
+  nameid.requestApi ();
 
-Finally, the form element (a <input> most probably) containing the
-user's identity must have the ID "identity", which is used by the add-on
-to find out which identity is requested.  It stores the signed message
-into the element with ID "signature", which is a <textarea>.
+  ...
 
-If the add-on activates on a page, it sets the document element's DOM class
-to "withAddon".  This is used by NameID to selectively hide the signature
-field with CSS if the add-on is there.
+  /* To try to sign the challenge for a user with identity ID,
+     you can use the following code.  It could be called, for instance,
+     in the "onsubmit" event handler of your login form.  */
+  if (nameid.hasApi ())
+    {
+      var SIG = nameid.signChallenge (ID);
+
+      /* Do something with the signature in SIG.  Set a form element's
+         value to SIG and submit the form, or whatever else.  */
+    }
+
+See also NameID's own login page, with the code in pages/loginForm.php.
+The "nameid" object above provides also the method "nameid.getChallenge (ID)",
+which can be used (even if the add-on is not available) to construct
+the challenge message in the required format for the given identity.
 
 Server Side
 -----------
