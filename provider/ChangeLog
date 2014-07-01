@@ -2,6 +2,8 @@ ChangeLog for NameID Identity Provider
 ======================================
 
 Version 0.5a (trunk):
+  * Switch to the new event-based communication between login page and the
+    login browser add-on.
 
 Version 0.4a (2014-02-16):
   * Sanitise links displayed on identity page to prevent malicious
