@@ -1,7 +1,7 @@
 <?php
 /*
     NameID, a namecoin based OpenID identity provider.
-    Copyright (C) 2013 by Daniel Kraft <d@domob.eu>
+    Copyright (C) 2013-2014 by Daniel Kraft <d@domob.eu>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -70,41 +70,81 @@ message:</label></p>
 
 </form>
 
-<!-- Store values for constructing the challenge here for the
-     NameID addon.  -->
-<div class="hidden">
-  <span id="nameid-nonce"><?php echo $html->escape ($loginNonce); ?></span>
-  <span id="nameid-uri"><?php echo $html->escape ($serverUri); ?></span>
-</div>
-
 <!-- ======================================================================= -->
 
-<!-- A little JavaScript to construct the message to sign dynamically
-     based on the entered id.  It is probably not necessary to include
-     the id in the challenge message, but it doesn't matter.  -->
+<!-- Load JS script.  -->
+<script type="text/javascript" src="js/NameId.js"></script>
+
+<!-- Custom JS code for this page.  -->
 <script type="text/javascript">
 
-function updateChallenge (evt)
-{
-  var id = document.getElementById ("identity").value;
-  var data = <?php
+/* The NameId object used.  Will be constructed in onload event.  */
+var nameid = null;
+
+/* Store basic login information from PHP.  */
+var data = <?php
 $data = array ("nonce" => $loginNonce,
                "url" => $serverUri);
 echo json_encode ($data);
-    ?>;
+?>;
 
-  /* The code below must be in sync with authenticator.inc.php!  */
-
-  var fullId = data.url + "?name=" + encodeURIComponent (id);
-  var msg = "login " + fullId + " " + data.nonce;
-
+/* Update the challenge field.  */
+function updateChallenge (evt)
+{
+  var id = document.getElementById ("identity").value;
+  var msg = nameid.getChallenge (id);
   document.getElementById ("message").value = msg;
 }
 
+/* Try to sign the challenge message via the add-on.  */
+function signChallenge ()
+{
+  var id = document.getElementById ("identity").value;
+  var signature = nameid.signChallenge (id);
+
+  if (signature === null)
+    return false;
+
+  document.getElementById ("signature").value = signature;
+  return true;
+}
+
+/* Set up everything on page load.  */
 function setup (evt)
 {
+  nameid = new NameId (data.url, data.nonce);
+  nameid.requestApi ();
+
+  if (nameid.hasApi ())
+    {
+      var body = document.getElementsByTagName ("body");
+      body[0].className = "withAddon";
+    }
+
   var idEntry = document.getElementById ("identity");
   idEntry.addEventListener ("change", updateChallenge);
+
+  var cancelClicked = false;
+  function handleSubmit (evt)
+    {
+      if (cancelClicked)
+        return;
+
+      var res = signChallenge ();
+      if (!res)
+        evt.preventDefault ();
+    }
+  function handleCancel (evt)
+    {
+      cancelClicked = true;
+    }
+  if (nameid.hasApi ())
+    {
+      var form = document.getElementById ("loginForm");
+      form.addEventListener ("submit", handleSubmit);
+      var cancel = document.getElementById ("cancel");
+      cancel.addEventListener ("click", handleCancel);
+    }
 }
 window.addEventListener ("load", setup);
 
