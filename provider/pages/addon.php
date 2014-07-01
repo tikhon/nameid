@@ -41,8 +41,8 @@ and troublesome, you can <b>automate them</b> by using the
 browsers.  Try it out:</p>
 
 <div class="offset1"><a class="btn btn-success"
-      href="NameIdLogin-0.4a.xpi">NameID Easy Login<br />
-<small>Version 0.4a</small></a></div>
+      href="NameIdLogin-0.5a.xpi">NameID Easy Login<br />
+<small>Version 0.5a</small></a></div>
 
 <p class="padTop">When the add-on is installed, you have to make sure that the
 <a href="https://github.com/namecoin-qt/namecoin-qt"><b>Namecoin-Qt</b></a>

@@ -33,6 +33,9 @@ $msg->finish ();
 <div class="hideWithAddon">
   <div class="alert alert-info">Manually signing the challenge is very
 troublesome.  Take a look at our <a href="?view=addon"><b>add-on</b></a>!</div>
+  <div class="alert alert-warning">Note that the login process was
+changed since version 0.4a of the add-on, so you may need to
+<a href="?view=addon">upgrade</a> if you still have the old version.</div>
 </div>
 
 <p>In order to sign in with your Namecoin identity, you have to
