@@ -33,6 +33,15 @@ function NameIdAddon (pref)
 {
   this.pref = pref;
   this.trust = new TrustManager (pref);
+
+  /* Set constants for API event and element ID.  We have two events:
+     the "apiEvent" is fired on the "apiElement" when the extension is
+     already enabled on the page, and does the real work.  The "apiRequestEvent"
+     is fired on the document itself to request that the extension is enabled
+     on the page in the first place (possibly prompting a "Trust?" dialog).  */
+  this.apiEvent = "nameid-login-event";
+  this.apiRequestEvent = "nameid-login-requestAPI";
+  this.apiElement = "nameid-login-eventTarget";
 }
 
 NameIdAddon.prototype =
@@ -43,7 +52,7 @@ NameIdAddon.prototype =
      */
     register: function ()
     {
-      Services.obs.addObserver (this, "content-document-global-created", false);
+      Services.obs.addObserver (this, "document-element-inserted", false);
     },
 
     /**
@@ -51,107 +60,123 @@ NameIdAddon.prototype =
      */
     unregister: function ()
     {
-      Services.obs.removeObserver (this, "content-document-global-created");
+      Services.obs.removeObserver (this, "document-element-inserted");
       this.trust.close ();
       this.trust = null;
     },
 
     /**
-     * Observe events, in particular loads of new documents that have to be
-     * scanned for signs of a NameID login form.
+     * Observe events, in particular loads of new documents for which we
+     * want to enable the apiRequestEvent.
      * @param subject Subject of the event.
      * @param topic Topic of the event.
      * @param data Further data.
      */
     observe: function (subject, topic, data)
     {
-      if (topic !== "content-document-global-created")
+      if (topic !== "document-element-inserted")
         return;
 
-      log ("Observing page load: " + subject.document.URL);
+      log ("Observing page load: " + subject.URL);
       var me = this;
       function handler (evt)
         {
-          me.scanPage (evt.target);
+          me.requestApi (evt.target);
         }
-      subject.addEventListener ("load", handler, true);
+      subject.addEventListener (this.apiRequestEvent, handler, false, true);
+      log ("Registered API-request event listener on document.");
     },
 
     /**
-     * Handle events of fully loaded pages, which are then scanned
-     * for signs of a NameID form.
+     * Handle a request made by the page to enable the API.  This shows
+     * a trust dialog (if the page is not whitelisted) and, if positive,
+     * inserts the actual event target element.
      * @param doc The page's document.
      */
-    scanPage: function (doc)
+    requestApi: function (doc)
     {
-      var nonceEl = doc.getElementById ("nameid-nonce");
-      var uriEl = doc.getElementById ("nameid-uri");
-      var form = doc.getElementById ("loginForm");
-      if (!nonceEl || !uriEl || !form)
-        {
-          var missing = "";
-          if (!nonceEl)
-            missing += " nonceEl";
-          if (!uriEl)
-            missing += " uriEl";
-          if (!form)
-            missing += " form";
-          log ("Found no NameID login form.  Missing:" + missing);
-          return;
-        }
+      /* If there is already an API element, just return.  */
+      var apiEl;
+      apiEl = doc.getElementById (this.apiElement);
+      if (apiEl !== null)
+        return;
 
-      /* Ignore duplicate page load events.  */
-      if (form.dataset.nameidLoginObserved === "yes")
-        {
-          log ("Duplicate event, ignoring.");
-          return;
-        }
-      form.dataset.nameidLoginObserved = "yes";
-
-      /* Ask the user about trust for this page.  */
+      /* Check trust.  */
       var ok = this.trust.decide (doc.URL);
       if (!ok)
         return;
 
-      this.nonce = nonceEl.textContent;
-      this.uri = uriEl.textContent;
-      log ("Found NameID login form with nonce: " + this.nonce);
+      /* Insert api element.  */
+      var body = doc.getElementsByTagName ("body");
+      if (body.length !== 1)
+        {
+          log ("Could not find the page's <body>.");
+          return;
+        }
+      else
+        body = body[0];
+      apiEl = doc.createElement ("div");
+      body.appendChild (apiEl);
+      apiEl.id = this.apiElement;
 
-      /* Hide the manual entry forms.  */
-      doc.documentElement.className = "withAddon";
-
-      /* Connect a handler to intercept the form submit.  Note that we don't
-         want to intercept if the cancel button was clicked.  */
-      var cancel = doc.getElementById ("cancel");
-      this.cancelClicked = false;
+      /* Register custom event handler.  */
       var me = this;
-      function handlerSubmit (e)
+      function handler ()
         {
-          if (!me.cancelClicked)
+          var data = apiEl.getAttribute ("data");
+          var res;
+          try
             {
-              var submit = me.interceptSubmit (doc);
-              if (!submit)
-                e.preventDefault ();
+              res = me.handleCall (doc.URL, JSON.parse (data));
+              res.success = true;
             }
+          catch (err)
+            {
+              Services.prompt.alert (null, "NameID Login Error", err);
+              res = {"error": err, "success": false};
+            }
+          apiEl.setAttribute ("result", JSON.stringify (res));
         }
-      function handlerCancel (e)
-        {
-          me.cancelClicked = true;
-        }
-      form.addEventListener ("submit", handlerSubmit, true);
-      cancel.addEventListener ("click", handlerCancel, true);
+      apiEl.addEventListener (this.apiEvent, handler, false, true);
+      log ("Registered API event listener.");
     },
 
     /**
-     * Intercept the form submit.
-     * @param doc The document we're on.
-     * @return False in case we want to abort the submission.
+     * Handle an API call with the given data.
+     * @param url Current document's URL.
+     * @param data JSON-parsed call data.
+     * @return Resulting data to be returned to the caller.
      */
-    interceptSubmit: function (doc)
+    handleCall: function (url, data)
     {
-      var idEntry = doc.getElementById ("identity");
-      var id = idEntry.value;
-      var msg = this.getChallenge (id);
+      log ("API-Call: " + JSON.stringify (data));
+      if (data.version !== 1)
+        throw "Unsupported API version: " + data.version;
+
+      switch (data.method)
+        {
+        case "signChallenge":
+          var signature = this.signChallenge (url, data.nonce, data.identity);
+          return {"signature": signature};
+
+        default:
+          throw "Unsupported method: " + data.method;
+        }
+
+      /* Should not happen.  */
+      throw "No method matched.";
+    },
+
+    /**
+     * Sign a challenge message.
+     * @param url The document login URL.
+     * @param nonce The login nonce.
+     * @param id The ID as which to log in.
+     * @return The signed challenge message.
+     */
+    signChallenge: function (url, nonce, id)
+    {
+      var msg = this.getChallenge (url, nonce, id);
       log ("Attempting to sign challenge: " + msg);
 
       /* Custom error handler that understands some error codes.  */
@@ -172,116 +197,107 @@ NameIdAddon.prototype =
           return false;
         }
 
-      try
+      var nc = new Namecoind (this.pref);
+
+      var data = nc.executeRPC ("name_show", ["id/" + id], errHandler);
+      var addr = data.address;
+      log ("Found address for name 'id/" + id + "': " + addr);
+
+      /* Try to find an address that is allowed to sign and also
+         contained in the user's wallet.  */
+
+      var myAddr = null;
+
+      res = nc.executeRPC ("validateaddress", [addr]);
+      if (res.ismine)
+        myAddr = addr;
+      else
         {
-          var nc = new Namecoind (this.pref);
+          log ("Looking for signer in value:\n" + data.value);
 
-          var data = nc.executeRPC ("name_show", ["id/" + id], errHandler);
-          var addr = data.address;
-          log ("Found address for name 'id/" + id + "': " + addr);
+          var value;
+          try
+            {
+              value = JSON.parse (data.value);
+            }
+          catch (exc)
+            {
+              /* JSON parse error, assume no signers.  */
+              value = {};
+            }
 
-          /* Try to find an address that is allowed to sign and also
-             contained in the user's wallet.  */
-
-          var myAddr = null;
-
-          res = nc.executeRPC ("validateaddress", [addr]);
-          if (res.ismine)
-            myAddr = addr;
+          var arr;
+          if (typeof value.signer === "string")
+            arr = [value.signer];
+          else if (Array.isArray (value.signer))
+            arr = value.signer;
           else
+            arr = [];
+            
+          for (var i = 0; i < arr.length; ++i)
             {
-              log ("Looking for signer in value:\n" + data.value);
-
-              var value;
-              try
+              res = nc.executeRPC ("validateaddress", [arr[i]]);
+              if (res.ismine)
                 {
-                  value = JSON.parse (data.value);
-                }
-              catch (exc)
-                {
-                  /* JSON parse error, assume no signers.  */
-                  value = {};
-                }
-
-              var arr;
-              if (typeof value.signer === "string")
-                arr = [value.signer];
-              else if (Array.isArray (value.signer))
-                arr = value.signer;
-              else
-                arr = [];
-                
-              for (var i = 0; i < arr.length; ++i)
-                {
-                  res = nc.executeRPC ("validateaddress", [arr[i]]);
-                  if (res.ismine)
-                    {
-                      myAddr = arr[i];
-                      log ("Found available signer: " + myAddr);
-                      break;
-                    }
+                  myAddr = arr[i];
+                  log ("Found available signer: " + myAddr);
+                  break;
                 }
             }
-
-          if (myAddr === null)
-            throw "You are not allowed to sign for 'id/" + id + "'.";
-
-          /* Try to sign the challenge with the address found.  */
-
-          res = nc.executeRPC ("getinfo", []);
-          var didUnlock = false;
-          if (res.unlocked_until !== undefined && res.unlocked_until === 0)
-            {
-              var title = "Unlock Namecoin Wallet";
-              var text = "Please provide the password to temporarily unlock"
-                         + " your namecoin wallet:";
-
-              var pwd = {};
-              var btn = Services.prompt.promptPassword (null, title, text, pwd, 
-                                                        null, {});
-              /* Abort if cancel was clicked.  */
-              if (!btn)
-                {
-                  log ("Wallet unlock cancelled by user.");
-                  nc.close ();
-                  return false;
-                }
-
-              nc.executeRPC ("walletpassphrase", [pwd.value, 10], errHandler);
-              didUnlock = true;
-            }
-
-          var signature = nc.executeRPC ("signmessage", [myAddr, msg]);
-          doc.getElementById ("signature").value = signature;
-          log ("Successfully provided signature.");
-
-          if (didUnlock)
-            nc.executeRPC ("walletlock", []);
-
-          nc.close ();
         }
-      catch (err)
+
+      if (myAddr === null)
+        throw "You are not allowed to sign for 'id/" + id + "'.";
+
+      /* Try to sign the challenge with the address found.  */
+
+      res = nc.executeRPC ("getinfo", []);
+      var didUnlock = false;
+      if (res.unlocked_until !== undefined && res.unlocked_until === 0)
         {
-          Services.prompt.alert (null, "NameID Connection Error", err);
-          return false;
+          var title = "Unlock Namecoin Wallet";
+          var text = "Please provide the password to temporarily unlock"
+                     + " your namecoin wallet:";
+
+          var pwd = {};
+          var btn = Services.prompt.promptPassword (null, title, text, pwd, 
+                                                    null, {});
+          /* Abort if cancel was clicked.  */
+          if (!btn)
+            {
+              log ("Wallet unlock cancelled by user.");
+              nc.close ();
+              return null;
+            }
+
+          nc.executeRPC ("walletpassphrase", [pwd.value, 10], errHandler);
+          didUnlock = true;
         }
 
-      return true;
+      var signature = nc.executeRPC ("signmessage", [myAddr, msg]);
+      log ("Successfully provided signature.");
+
+      if (didUnlock)
+        nc.executeRPC ("walletlock", []);
+
+      nc.close ();
+      return signature;
     },
 
     /**
-     * Construct the challenge message for a given ID.  Page URI and
-     * nonce are stored already as variables.
+     * Construct the challenge message for a given ID.
+     * @param url Login page url.
+     * @param nonce Login nonce.
      * @param id The user entered ID.
      * @return The full challenge message.
      */
-    getChallenge: function (id)
+    getChallenge: function (url, nonce, id)
     {
       /* This must of course be in sync with the PHP code as well as
          the "ordinary" page JavaScript!  */
 
-      var fullId = this.uri + "?name=" + encodeURIComponent (id);
-      var msg = "login " + fullId + " " + this.nonce;
+      var fullId = url + "?name=" + encodeURIComponent (id);
+      var msg = "login " + fullId + " " + nonce;
 
       return msg;
     }
