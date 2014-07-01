@@ -54,11 +54,7 @@ TrustManager.prototype =
     {
       /* Remove request parameters from the URL, since they may depend on
          the consumer site for instance.  */
-      var re = /^([^?]*)\?/;
-      var arr = re.exec (url);
-      if (arr)
-        url = arr[1];
-
+      url = stripUrl (url);
       log ("Deciding trust for " + url + "...");
 
       var white = this.pref.getTrustList ("white");

@@ -121,13 +121,14 @@ NameIdAddon.prototype =
 
       /* Register custom event handler.  */
       var me = this;
+      var url = stripUrl (doc.URL);
       function handler ()
         {
           var data = apiEl.getAttribute ("data");
           var res;
           try
             {
-              res = me.handleCall (doc.URL, JSON.parse (data));
+              res = me.handleCall (url, JSON.parse (data));
               res.success = true;
             }
           catch (err)
@@ -156,6 +157,12 @@ NameIdAddon.prototype =
       switch (data.method)
         {
         case "signChallenge":
+          if (url !== data.url)
+            {
+              log ("URL mismatch: expected '" + url
+                    + "', got '" + data.url + "'");
+              throw "Login page URL mismatch.";
+            }
           var signature = this.signChallenge (url, data.nonce, data.identity);
           return {"signature": signature};
 

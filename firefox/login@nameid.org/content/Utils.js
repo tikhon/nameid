@@ -1,6 +1,6 @@
 /*
     NameID, a namecoin based OpenID identity provider.
-    Copyright (C) 2013 by Daniel Kraft <d@domob.eu>
+    Copyright (C) 2013-2014 by Daniel Kraft <d@domob.eu>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
 
 Components.utils.import ("resource://gre/modules/Services.jsm");
 
-var EXPORTED_SYMBOLS = ["log", "logError", "assert"];
+var EXPORTED_SYMBOLS = ["log", "logError", "assert", "stripUrl"];
 
 /**
  * Utility function to log a message to the ErrorConsole.  This is used
@@ -54,4 +54,20 @@ function assert (cond)
       logError ("Assertion failure.");
       throw "Assertion failure.";
     }
+}
+
+/**
+ * Strip request parameters off an URL.  This is used to get the login
+ * page URL for the challenge message.
+ * @param url Original URL.
+ * @return URL without request parameters.
+ */
+function stripUrl (url)
+{
+  var re = /^([^?]*)\?/;
+  var arr = re.exec (url);
+  if (arr)
+    return arr[1];
+
+  return url;
 }
