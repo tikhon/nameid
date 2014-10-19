@@ -65,8 +65,9 @@ abstract class FieldHandler
   public function output (HtmlOutput $html, $data)
   {
     $content = $this->processContent ($html, $data);
-    if ($content !== NULL)
+    if (is_string ($content))
       {
+        assert ($content !== NULL);
         echo "<dt>" . $html->escape ($this->label) . "</dt>\n";
         echo "<dd>$content</dd>\n";
       }
@@ -85,13 +86,14 @@ abstract class FieldHandler
 }
 
 /**
- * Basic field that just prints the literal value.
+ * Basic field class that reads its value from a defined JSON field.
+ * It is still abstract and doesn't fully implement the output.
  */
-class BasicField extends FieldHandler
+abstract class BasicField extends FieldHandler
 {
 
   /** Key in the JSON data to extract.  */
-  protected $key;
+  private $key;
 
   /**
    * Construct the field.
@@ -105,7 +107,8 @@ class BasicField extends FieldHandler
   }
 
   /**
-   * Get the content to show.
+   * Get the content to show.  This extracts the field value (if present)
+   * and calls another abstract method to interpret it.
    * @param html HtmlOutput object to use.
    * @param data JSON data of the id value.
    * @return Processed content.
@@ -115,7 +118,101 @@ class BasicField extends FieldHandler
     if (!isset ($data->{$this->key}))
       return NULL;
 
-    return $html->escape ($data->{$this->key});
+    return $this->processValue ($html, $data->{$this->key});
+  }
+
+  /**
+   * Subclasses must implement interpretation of the value.
+   * Returning NULL signals that the value can not be interpreted.
+   * @param html HtmlOutput object to use.
+   * @param val Value of the field's key in the JSON object.
+   * @return Processed content.
+   */
+  abstract protected function processValue (HtmlOutput $html, $val);
+
+}
+
+/**
+ * Simple field that prints its value literally.  It can be configured to
+ * support arrays and object values, iterating over the fields.
+ */
+class SimpleField extends BasicField
+{
+
+  /** Allow array values?  */
+  private $arrays;
+  /** Allow object values?  */
+  private $objects;
+
+  /**
+   * Construct it.
+   * @param label The label to display.
+   * @param key The key for data extraction.
+   * @param withArrays Allow arrays?
+   * @param withObjects Allow objects?
+   */
+  public function __construct ($label, $key, $withArrays = false,
+                               $withObjects = false)
+  {
+    parent::__construct ($label, $key);
+    $this->arrays = $withArrays;
+    $this->objects = $withObjects;
+  }
+
+  /**
+   * Implement the process value function.
+   * @param html HtmlOutput object to use.
+   * @param val Value of the field's key in the JSON object.
+   * @return Processed content.
+   */
+  protected function processValue (HtmlOutput $html, $val)
+  {
+    if ($this->arrays && is_array ($val))
+      {
+        $entries = array ();
+        foreach ($val as $v)
+          {
+            $cur = $this->processSimple ($html, $v);
+            if (is_string ($cur))
+              {
+                assert ($cur !== NULL);
+                array_push ($entries, $cur);
+              }
+          }
+        return implode (", ", $entries);
+      }
+
+    if ($this->objects && is_object ($val))
+      {
+        $entries = array ();
+        foreach ($val as $key => $v)
+          {
+            $cur = $this->processSimple ($html, $v);
+            if (is_string ($key) && is_string ($cur))
+              {
+                assert ($cur !== NULL);
+                $k = $html->escape ($key);
+                array_push ($entries, "$cur ($k)");
+              }
+          }
+        return implode (", ", $entries);
+      }
+
+    return $this->processSimple ($html, $val);
+  }
+
+  /**
+   * Process a simple value (not array or object).
+   * @param html HtmlOutput object to use.
+   * @param val The value.
+   * @return Processed content.
+   */
+  protected function processSimple (HtmlOutput $html, $val)
+  {
+    if (is_string ($val))
+      return $html->escape ($val);
+
+    return NULL;
   }
 
 }
@@ -123,21 +220,20 @@ class BasicField extends FieldHandler
 /**
  * Field for website.
  */
-class WebsiteField extends BasicField
+class WebsiteField extends SimpleField
 {
 
   /**
    * Get the content to show.
    * @param html HtmlOutput object to use.
-   * @param data JSON data of the id value.
+   * @param val The value.
    * @return Processed content.
    */
-  protected function processContent (HtmlOutput $html, $data)
+  protected function processSimple (HtmlOutput $html, $val)
   {
-    if (!isset ($data->{$this->key}))
+    if (!is_string ($val))
       return NULL;
 
-    $val = $data->{$this->key};
     $text = $html->escape ($val);
     $link = $html->escape (sanitiseLink ($val));
 
@@ -150,7 +246,7 @@ class WebsiteField extends BasicField
  * Field for email or crypto-addresses.  We create a link and prepend
  * a given "protocol" to it.
  */
-class ProtocolledField extends BasicField
+class ProtocolledField extends SimpleField
 {
 
   /** The protocol to prepend.  */
@@ -161,26 +257,29 @@ class ProtocolledField extends BasicField
    * @param label The label to display.
    * @param key The key for data extraction.
    * @param protocol The protocol to prepent.
+   * @param withArrays Allow arrays?
+   * @param withObjects Allow objects?
    */
-  public function __construct ($label, $key, $protocol)
+  public function __construct ($label, $key, $protocol,
+                               $withArrays = false, $withObjects = false)
   {
-    parent::__construct ($label, $key);
+    parent::__construct ($label, $key, $withArrays, $withObjects);
     $this->protocol = $protocol;
   }
 
   /**
    * Get the content to show.
    * @param html HtmlOutput object to use.
-   * @param data JSON data of the id value.
+   * @param val The value.
    * @return Processed content.
    */
-  protected function processContent (HtmlOutput $html, $data)
+  protected function processSimple (HtmlOutput $html, $val)
   {
-    if (!isset ($data->{$this->key}))
+    if (!is_string ($val))
       return NULL;
 
     $proto = $html->escape ($this->protocol);
-    $val = $html->escape ($data->{$this->key});
+    $val = $html->escape ($val);
     return "<a href='$proto:$val'>$val</a>";
   }
 
@@ -195,15 +294,11 @@ class GPG_Field extends BasicField
   /**
    * Get the content to show.
    * @param html HtmlOutput object to use.
-   * @param data JSON data of the id value.
+   * @param val The value.
    * @return Processed content.
    */
-  protected function processContent (HtmlOutput $html, $data)
+  protected function processValue (HtmlOutput $html, $val)
   {
-    if (!isset ($data->{$this->key}))
-      return NULL;
-
-    $val = $data->{$this->key};
     if (!is_object ($val))
       return NULL;
     if (!isset ($val->v) || $val->v !== "pka1")
@@ -264,19 +359,22 @@ class GPG_Field extends BasicField
 
 <?php
 
-$fields = array (new BasicField ("Real Name", "name"),
-                 new BasicField ("Nickname", "nick"),
-                 new WebsiteField ("Website", "website"),
-                 new ProtocolledField ("Email", "email", "mailto"),
+$fields = array (new SimpleField ("Real Name", "name"),
+                 new SimpleField ("Nickname", "nick", true, true),
+                 new WebsiteField ("Website", "website", true, true),
+                 new ProtocolledField ("Email", "email", "mailto", true, true),
                  new GPG_Field ("OpenPGP", "gpg"),
-                 new BasicField ("Bitmessage", "bitmessage"),
-                 new BasicField ("XMPP", "xmpp"),
-                 new ProtocolledField ("Bitcoin", "bitcoin", "bitcoin"),
-                 new ProtocolledField ("Namecoin", "namecoin", "namecoin"),
+                 new SimpleField ("Bitmessage", "bitmessage", true, true),
+                 new SimpleField ("XMPP", "xmpp", true, true),
+                 new ProtocolledField ("Bitcoin", "bitcoin", "bitcoin",
+                                       true, true),
+                 new ProtocolledField ("Namecoin", "namecoin", "namecoin",
+                                       true, true),
                  new ProtocolledField ("Huntercoin", "huntercoin",
-                                       "huntercoin"),
-                 new ProtocolledField ("Litecoin", "litecoin", "litecoin"),
-                 new BasicField ("Peercoin", "ppcoin"));
+                                       "huntercoin", true, true),
+                 new ProtocolledField ("Litecoin", "litecoin", "litecoin",
+                                       true, true),
+                 new SimpleField ("Peercoin", "ppcoin", true, true));
 
 if ($identityPage)
   {
