@@ -10,7 +10,7 @@ that private key.
 
 OpenID is a system which allows you to sign into a plethora of websites
 using a single identity, which is provided by some OpenID server (the
-identity provider) or your choice.  NameID now tries to combine both ideas
+identity provider) of your choice.  NameID now tries to combine both ideas
 by implementing an OpenID identity provider which allows anyone owning
 a id/ identity to sign into it, authenticating with a private key signature.
 You don't have to (and can't in fact) register an account with NameID
