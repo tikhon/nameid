@@ -16,4 +16,4 @@ a id/ identity to sign into it, authenticating with a private key signature.
 You don't have to (and can't in fact) register an account with NameID
 and also don't need to remember a password, because the first is done
 by registering an id/ name with the decentralised namecoin network, and the
-second is replaced by your name's private key.
+second is replaced by your nym's private key.
