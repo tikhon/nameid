@@ -2,7 +2,7 @@ NameID
 ======
 
 With namecoin, you can register names corresponding to online identities of
-the form "id/something", which can hold your email address, real name, other
+the form "id/something", which can hold your email address, legal name, other
 contact info, public key fingerprints, or whatever else you desire.
 Furthermore, since ownership of a name is associated to possession of
 a corresponding private key, one can proof it using a signature with
