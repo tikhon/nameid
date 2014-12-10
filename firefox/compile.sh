@@ -18,7 +18,7 @@
 # Compile the add-on into an XPI.
 
 dir=login@nameid.org
-zipfile=NameIdLogin-0.6a.xpi
+zipfile=NameIdLogin-0.6.1.xpi
 
 files="bootstrap.js chrome.manifest install.rdf icon.png"
 for file in Namecoind.js NameIdAddon.js \

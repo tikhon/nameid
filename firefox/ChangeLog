@@ -1,8 +1,9 @@
 ChangeLog for NameID Login Extension
 ====================================
 
-Version 0.6a (trunk):
+Version 0.6.1 (trunk):
   * Add an extension icon.
+  * Fix warning given by Mozilla add-on checker.
 
 Version 0.5a (2014-07-01):
   * Whitelist nameid.bit and id.bit by default, too.
