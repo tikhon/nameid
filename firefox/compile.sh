@@ -20,7 +20,7 @@
 dir=login@nameid.org
 zipfile=NameIdLogin-0.6a.xpi
 
-files="bootstrap.js chrome.manifest install.rdf"
+files="bootstrap.js chrome.manifest install.rdf icon.png"
 for file in Namecoind.js NameIdAddon.js \
             PrefHandler.js TrustManager.js Utils.js \
             preferences.js preferences.xul

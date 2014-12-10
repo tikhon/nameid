@@ -1,7 +1,8 @@
-ChangeLog for NameID Login Add-On
-=================================
+ChangeLog for NameID Login Extension
+====================================
 
 Version 0.6a (trunk):
+  * Add an extension icon.
 
 Version 0.5a (2014-07-01):
   * Whitelist nameid.bit and id.bit by default, too.
