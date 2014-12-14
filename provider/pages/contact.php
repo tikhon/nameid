@@ -44,5 +44,5 @@ Papierm&uuml;hlgasse 21<br />
 8020 Graz<br />
 Austria<br /><br />
 <a href="mailto:d@domob.eu">d@domob.eu</a><br />
-GnuPG: <a href="domob.asc">04F7CF52</a>
+GnuPG: <a href="domob.asc">A7330737</a>
 </address>

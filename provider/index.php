@@ -399,7 +399,7 @@ by <a href="http://www.domob.eu/">Daniel Kraft</a>.
 check out the <a href="https://gitorious.org/nameid/">source code</a>!</p>
 
   <p class="text-center">BTC: 1<b>Nameid</b>3brhZrbTN1M7t6afMAfVBiGioJT
-| NMC: ND6yWYKZS9NnMPnfN6C6yZHG8gRe3r69GR</p>
+| NMC: <b>NAmeid</b>5L2ZcaQFszYwk4sa929zbQymaaWa</p>
 
 </body>
 </html>
