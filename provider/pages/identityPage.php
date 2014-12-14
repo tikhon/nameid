@@ -35,6 +35,29 @@ function sanitiseLink ($href)
   return "http://$href";
 }
 
+/**
+ * Helper routine to check a key fingerprint and format it nicely.  This
+ * makes all hex characters upper case, removes spaces and colons, and
+ * puts back spaces to group the characters in a uniform way.  Finally,
+ * it formats the final digits (as in the usual GPG fingerprint key ID)
+ * in <strong> tags.
+ * @param fpr The fingerprint to format.
+ * @return The processed fingerprint.
+ */
+function formatKeyFingerprint ($fpr)
+{
+  $fpr = strtoupper ($fpr);
+  $fpr = preg_replace ("/[ :]/", "", $fpr);
+
+  if (!preg_match ("/^[0-9A-F]{40}$/", $fpr))
+    return NULL;
+
+  $fpr = preg_replace ("/(.{4})/", "$1 ", $fpr);
+  $fpr = preg_replace ("/(.{4} .{4}) $/", "<strong>$1</strong>", $fpr);
+
+  return $fpr;
+}
+
 /* ************************************************************************** */
 /* Field handlers.  */
 
@@ -286,6 +309,28 @@ class ProtocolledField extends SimpleField
 }
 
 /**
+ * Field for OTR key fingerprint.
+ */
+class OTR_Field extends SimpleField
+{
+
+  /**
+   * Get the content to show.
+   * @param html HtmlOutput object to use.
+   * @param val The value.
+   * @return Processed content.
+   */
+  protected function processSimple (HtmlOutput $html, $val)
+  {
+    if (!is_string ($val))
+      return NULL;
+
+    return formatKeyFingerprint ($val);
+  }
+
+}
+
+/**
  * Field for GPG fingerprint.
  */
 class GPG_Field extends BasicField
@@ -306,7 +351,7 @@ class GPG_Field extends BasicField
     if (!isset ($val->fpr))
       return NULL;
 
-    $formatted = $this->formatGPG ($val->fpr);
+    $formatted = formatKeyFingerprint ($val->fpr);
     if ($formatted === NULL)
       return NULL;
 
@@ -325,29 +370,6 @@ class GPG_Field extends BasicField
     return $content;
   }
 
-  /**
-   * Helper routine to check a GPG fingerprint and format it nicely.  This
-   * makes all hex characters upper case, removes spaces and colons, and
-   * puts back spaces to group the characters in a uniform way.  Finally,
-   * it formats the final digits (as in the usual GPG fingerprint key ID)
-   * in <strong> tags.
-   * @param fpr The fingerprint to format.
-   * @return The processed fingerprint.
-   */
-  private function formatGPG ($fpr)
-  {
-    $fpr = strtoupper ($fpr);
-    $fpr = preg_replace ("/[ :]/", "", $fpr);
-
-    if (!preg_match ("/^[0-9A-F]{40}$/", $fpr))
-      return NULL;
-
-    $fpr = preg_replace ("/(.{4})/", "$1 ", $fpr);
-    $fpr = preg_replace ("/(.{4} .{4}) $/", "<strong>$1</strong>", $fpr);
-
-    return $fpr;
-  }
-
 }
 
 
@@ -364,6 +386,7 @@ $fields = array (new SimpleField ("Real Name", "name"),
                  new WebsiteField ("Website", "website", true, true),
                  new ProtocolledField ("Email", "email", "mailto", true, true),
                  new GPG_Field ("OpenPGP", "gpg"),
+                 new OTR_Field ("OTR Key", "otr", true, true),
                  new SimpleField ("Bitmessage", "bitmessage", true, true),
                  new SimpleField ("XMPP", "xmpp", true, true),
                  new ProtocolledField ("Bitcoin", "bitcoin", "bitcoin",
