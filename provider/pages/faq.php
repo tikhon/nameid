@@ -1,7 +1,7 @@
 <?php
 /*
     NameID, a namecoin based OpenID identity provider.
-    Copyright (C) 2013-2014 by Daniel Kraft <d@domob.eu>
+    Copyright (C) 2013-2015 by Daniel Kraft <d@domob.eu>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -28,7 +28,7 @@ if (!isset ($fromIndex) || $fromIndex !== "yes")
 
 <div class="well well-small">
   <p class="faq">What is Namecoin?</p>
-  <p><a href="http://namecoin.info/">Namecoin</a> is a peer-to-peer, completely
+  <p><a href="https://namecoin.org/">Namecoin</a> is a peer-to-peer, completely
 decentralised system based on <a href="https://bitcoin.org/">Bitcoin</a>
 technology that allows everyone to register <i>names</i>.  After you own
 a name, no-one can take it from you without your consent, and you can associate
@@ -40,14 +40,14 @@ be forged nor censored by unauthorised attackers.</p>
   <p class="faq">How do Namecoin identities work?</p>
   <p>In the Namecoin system, there are multiple possible uses for names:  The
 most common today is for
-<a href="http://wiki.namecoin.info/?title=Domain_Name_Specification_2.0"><b>domain
+<a href="https://wiki.namecoin.info/?title=Domain_Name_Specification_2.0"><b>domain
 names</b></a>
 (these are names with the <code>d/</code> prefix), but another possible
 use-case is that of
-<a href="http://wiki.namecoin.info/?title=Identity"><b>identities</b></a>:
+<a href="https://wiki.namecoin.info/?title=Identity"><b>identities</b></a>:
 Those are names of the form <code>id/your-nick</code>, and they are
 particularly interesting because you can, for instance, store your public keys
-for <a href="http://gnupg.org/">GnuPG</a>, your
+for <a href="https://www.gnupg.org/">GnuPG</a>, your
 <a href="https://bitmessage.org/">Bitmessage address</a> or other things
 in their value field, so that you only need to tell someone your
 (easily remembered) identity nick, and they can later access your keys
@@ -105,14 +105,14 @@ OpenID consumer site, where you are then authenticated with your identity.</p>
 <div class="well well-small">
   <p class="faq">What do I need in order to use NameID?</p>
   <p>First of all, you need a 
-<a href="http://wiki.namecoin.info/?title=Identity"><b>Namecoin
+<a href="https://wiki.namecoin.info/?title=Identity"><b>Namecoin
 identity</b></a>,
 and need the wallet that owns it on your local system.  Second, you need
 <a href="https://github.com/namecoin/namecoin"><b>Namecoin</b></a>
 installed and running with the <code>server=1</code> configuration flag,
 and need to be able to perform
 <code>signmessage</code> commands with it.  Don't worry though, you can
-install the <a href="?view=addon"><b>NameID Easy Login</b></a> add-on for
+install the <a href="?view=addon"><b>NameID Easy Login</b></a> extension for
 <a href="https://www.mozilla.org/">Mozilla</a> browsers, which takes
 care of the signing for you.  And finally, you need some OpenID-enabled
 sites you want to sign into.</p>
@@ -120,9 +120,9 @@ sites you want to sign into.</p>
 
 <div class="well well-small">
   <p class="faq">Where do I get a Namecoin identity from?</p>
-  <p>Please consult the <a href="http://namecoin.info/">Namecoin website</a>
+  <p>Please consult the <a href="https://namecoin.org/">Namecoin website</a>
 for more details, or take a look at the
-<a href="http://forum.namecoin.info/">Namecoin forum</a> for help.</p>
+<a href="https://forum.namecoin.info/">Namecoin forum</a> for help.</p>
 </div>
 
 <div class="well well-small">

@@ -1,8 +1,10 @@
 ChangeLog for NameID Identity Provider
 ======================================
 
-Version 0.6a (trunk):
+Version 0.6.0 (2015-02-21):
   * Support more id/ fields and allow some of them to be arrays or objects.
+  * Update links to Namecoin sites (namecoin.org, TLS).
+  * Link to Firefox extension on Mozilla Add-Ons.
 
 Version 0.5a (2014-07-01):
   * Switch to the new event-based communication between login page and the

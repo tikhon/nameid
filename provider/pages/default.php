@@ -1,7 +1,7 @@
 <?php
 /*
     NameID, a namecoin based OpenID identity provider.
-    Copyright (C) 2013-2014 by Daniel Kraft <d@domob.eu>
+    Copyright (C) 2013-2015 by Daniel Kraft <d@domob.eu>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published by
@@ -26,12 +26,12 @@ if (!isset ($fromIndex) || $fromIndex !== "yes")
 
 <h1>Namecoin + OpenID = NameID!</h1>
 
-<div class="alert alert-warning"><b>NameID</b> is still a very early
+<div class="alert alert-warning"><b>NameID</b> is still mostly an
 experiment, so <b>use at your own risk</b>!
 The <a href="?view=faq">FAQs</a> have some more information.  If you
 want to help out, please <a href="?view=contact">contact me</a>!</div>
 
-<p><a href="http://namecoin.info/"><b>Namecoin</b></a>
+<p><a href="https://namecoin.org/"><b>Namecoin</b></a>
 is an amazing technology that allows anyone to register arbitrary
 <b>human-readable</b> names in a <b>completely decentralised</b>
 but <b>nevertheless secure</b> fashion.
@@ -40,7 +40,7 @@ but <b>nevertheless secure</b> fashion.
 triangle</b></a>?  It can be argued that Namecoin is
 a prime <b>counter-example</b> to it.)
 These names can be used
-to create <a href="http://wiki.namecoin.info/?title=Identity"><b>online
+to create <a href="https://wiki.namecoin.info/?title=Identity"><b>online
 identities</b></a>.
 <i>With NameID, you can instantly turn your Namecoin identity
 into an <a href="https://openid.net/">OpenID</a>,
