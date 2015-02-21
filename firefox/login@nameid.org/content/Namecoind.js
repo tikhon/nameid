@@ -1,6 +1,6 @@
 /*
     NameID, a namecoin based OpenID identity provider.
-    Copyright (C) 2013 by Daniel Kraft <d@domob.eu>
+    Copyright (C) 2013,2015 by Daniel Kraft <d@domob.eu>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -106,13 +106,13 @@ Namecoind.prototype =
       ch.requestMethod = "POST";
 
       s = ch.open ();
-      var avail = s.available ();
-      if (avail === 0)
+      var len = ch.getResponseHeader ("Content-Length");
+      if (len === 0)
         {
           s.close ();
           throw "The connection to your local namecoind failed.";
         }
-      var string = NetUtil.readInputStreamToString (s, avail, null);
+      var string = NetUtil.readInputStreamToString (s, len, null);
       s.close ();
 
       /* Sometimes accessing responseStatus throws.  Catch this and fail
